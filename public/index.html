@@ -175,14 +175,27 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 1.5rem 0.75rem; }
-            .card { padding: 1.5rem; border-radius: 16px; }
-            .header-title { font-size: 1.05rem; }
-            .candidate { padding: 0.9rem 1rem; }
-            .rank-badge { width: 32px; height: 32px; font-size: 0.8rem; }
+            body { padding: 1rem 0.5rem; }
+            .card { padding: 1.25rem; border-radius: 16px; }
+            .header { margin-bottom: 1.5rem; }
+            .header-title { font-size: 1rem; }
+            .candidates { gap: 0.5rem; }
+            .candidate { padding: 0.85rem 0.9rem; border-radius: 12px; }
+            .candidate-left { gap: 0.7rem; }
+            .rank-badge { width: 42px; height: 42px; }
+            .name { font-size: 0.9rem; }
+            .pct { font-size: 1.3rem; margin-left: 0.5rem; }
+            .bar-bg { width: 90px; }
+            .updated { margin-bottom: 1rem; }
+        }
+
+        @media (max-width: 360px) {
+            .card { padding: 1rem; }
+            .candidate { padding: 0.75rem; }
+            .rank-badge { width: 36px; height: 36px; }
             .name { font-size: 0.85rem; }
-            .pct { font-size: 1.2rem; }
-            .bar-bg { width: 100px; }
+            .pct { font-size: 1.15rem; }
+            .bar-bg { width: 70px; }
         }
     </style>
 </head>
