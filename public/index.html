@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magyarorszag kovetkezo miniszterelnoke - Polymarket</title>
+    <title>Magyarország Következő Miniszterelnöke - Polymarket</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -195,14 +195,14 @@
 <body>
     <div class="card">
         <div class="header">
-            <div class="header-title">Magyarorszag kovetkezo miniszterelnoke</div>
-            <div class="live-badge"><span class="live-dot"></span> Elo odds a Polymarket API-rol</div>
+            <div class="header-title">Magyarország Következő Miniszterelnöke</div>
+            <div class="live-badge"><span class="live-dot"></span> Élő odds a Polymarket APIról</div>
         </div>
         <p class="updated" id="updated"></p>
         <div class="candidates" id="candidates">
             <div class="loading">
                 <div class="loading-spinner"></div>
-                <div>Betoltes...</div>
+                <div>Betöltés...</div>
             </div>
         </div>
         <div class="footer">
@@ -237,7 +237,7 @@
                     const parsed = typeof prices === 'string' ? JSON.parse(prices) : prices;
                     const yesPct = parseFloat(parsed[0]) * 100;
                     let name = m.question.replace(PREFIX, '').replace('?', '');
-                    if (name === 'another person') name = 'Mas szemely';
+                    if (name === 'another person') name = 'Más személy';
                     candidates.push({ name, pct: yesPct });
                 }
 
@@ -271,7 +271,7 @@
                     `${new Date().toLocaleString('hu-HU')}`;
 
             } catch (err) {
-                container.innerHTML = `<p class="error">Nem sikerult betolteni az adatokat.</p>`;
+                container.innerHTML = `<p class="error">Nem sikerült betölteni az adatokat.</p>`;
             }
         }
 
