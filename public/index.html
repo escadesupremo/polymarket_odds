@@ -142,16 +142,12 @@
         }
 
         .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-top: 1.5rem;
             padding-top: 1rem;
             border-top: 1px solid #f0f0f0;
+            text-align: center;
         }
         .volume { color: #ccc; font-size: 0.65rem; }
-        .powered-by { color: #ccc; font-size: 0.6rem; }
-        .powered-by a { color: #aaa; text-decoration: none; }
 
         .loading {
             text-align: center;
@@ -205,9 +201,6 @@
         </div>
         <div class="footer">
             <span class="volume" id="volume"></span>
-            <span class="powered-by">
-                <a href="https://polymarket.com/event/next-prime-minister-of-hungary" target="_blank" rel="noopener">polymarket.com</a>
-            </span>
         </div>
     </div>
 
@@ -271,7 +264,7 @@
                 const vol24h = event.volume24hr;
                 if (vol24h) {
                     document.getElementById('volume').textContent =
-                        `24h: $${Math.round(vol24h).toLocaleString('hu-HU')}`;
+                        `Utolsó 24 óra forgalma: $${Math.round(vol24h).toLocaleString('hu-HU')}`;
                 }
 
                 document.getElementById('updated').textContent =
