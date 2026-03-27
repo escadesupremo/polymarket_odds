@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magyarország következő miniszterelnöke - Polymarket odds</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1118;
+            color: #e4e4e7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 640px; width: 100%; }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #fff;
+        }
+        .subtitle {
+            color: #71717a;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        .subtitle a { color: #6366f1; text-decoration: none; }
+        .updated {
+            color: #52525b;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .candidate {
+            background: #1a1b26;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.15s;
+        }
+        .candidate:hover { background: #1e1f2e; }
+        .candidate-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .rank {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3f3f46;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+        .candidate:first-child .rank { color: #eab308; }
+        .candidate:nth-child(2) .rank { color: #a1a1aa; }
+        .candidate:nth-child(3) .rank { color: #b45309; }
+        .name { font-weight: 600; font-size: 1rem; }
+        .pct {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .pct.high { color: #22c55e; }
+        .pct.mid  { color: #eab308; }
+        .pct.low  { color: #71717a; }
+        .bar-bg {
+            height: 4px;
+            background: #27272a;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: #6366f1;
+            transition: width 0.6s ease;
+        }
+        .loading {
+            text-align: center;
+            color: #52525b;
+            padding: 3rem 0;
+            font-size: 0.875rem;
+        }
+        .error {
+            text-align: center;
+            color: #ef4444;
+            padding: 2rem 0;
+            font-size: 0.875rem;
+        }
+        .volume {
+            color: #52525b;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Magyarorszag kovetkezo miniszterelnoke</h1>
+        <p class="subtitle">
+            Elo odds a Polymarket API-rol &middot;
+            <a href="https://polymarket.com/event/next-prime-minister-of-hungary" target="_blank" rel="noopener">Eredeti piac</a>
+        </p>
+        <p class="updated" id="updated"></p>
+        <div id="candidates">
+            <p class="loading">Elo odds betoltese a Polymarket API-rol...</p>
+        </div>
+        <p class="volume" id="volume"></p>
+    </div>
+
+    <script>
+        // Calls the Cloudflare Pages Function at /api which proxies Polymarket
+        const API_URL = '/api';
+        const PREFIX = 'Will the next Prime Minister of Hungary be ';
+
+        function pctClass(pct) {
+            if (pct >= 10) return 'high';
+            if (pct >= 1) return 'mid';
+            return 'low';
+        }
+
+        function formatPct(pct) {
+            if (pct >= 1) return pct.toFixed(1) + '%';
+            if (pct >= 0.01) return pct.toFixed(2) + '%';
+            return '< 0.01%';
+        }
+
+        async function fetchOdds() {
+            const container = document.getElementById('candidates');
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const event = data[0];
+
+                const candidates = [];
+                for (const m of event.markets) {
+                    const prices = m.outcomePrices;
+                    if (!prices) continue;
+                    const parsed = typeof prices === 'string' ? JSON.parse(prices) : prices;
+                    const yesPct = parseFloat(parsed[0]) * 100;
+                    let name = m.question.replace(PREFIX, '').replace('?', '');
+                    if (name === 'another person') name = 'Mas szemely';
+                    candidates.push({ name, pct: yesPct });
+                }
+
+                candidates.sort((a, b) => b.pct - a.pct);
+
+                container.innerHTML = candidates.map((c, i) => `
+                    <div class="candidate">
+                        <div class="candidate-left">
+                            <span class="rank">${i + 1}</span>
+                            <div>
+                                <div class="name">${c.name}</div>
+                                <div class="bar-bg" style="width:180px">
+                                    <div class="bar-fill" style="width:${Math.min(c.pct, 100)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="pct ${pctClass(c.pct)}">${formatPct(c.pct)}</span>
+                    </div>
+                `).join('');
+
+                const vol24h = event.volume24hr;
+                if (vol24h) {
+                    document.getElementById('volume').textContent =
+                        `24 oras forgalom: $${Math.round(vol24h).toLocaleString('hu-HU')}`;
+                }
+
+                document.getElementById('updated').textContent =
+                    `Frissitve: ${new Date().toLocaleString('hu-HU')}`;
+
+            } catch (err) {
+                container.innerHTML = `<p class="error">Nem sikerult betolteni az adatokat. ${err.message}</p>`;
+            }
+        }
+
+        fetchOdds();
+        setInterval(fetchOdds, 60000);
+    </script>
+</body>
+</html>
