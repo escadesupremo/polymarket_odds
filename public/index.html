@@ -97,19 +97,17 @@
         }
 
         .rank-badge {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             flex-shrink: 0;
+            overflow: hidden;
         }
-        .rank-1 .rank-badge { background: #FFF8E1; color: #F59E0B; }
-        .rank-2 .rank-badge { background: #F3F4F6; color: #9CA3AF; }
-        .rank-3 .rank-badge { background: #FFF0E6; color: #D97706; }
+        .rank-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .name {
             font-weight: 600;
@@ -216,6 +214,11 @@
     <script>
         const API_URL = '/api';
         const PREFIX = 'Will the next Prime Minister of Hungary be ';
+        const IMAGES = {
+            'Péter Magyar': '/magyar-peter.png',
+            'Viktor Orbán': '/orban.jpg',
+            'László Toroczkai': '/toro.jfif',
+        };
 
         function formatPct(pct) {
             if (pct >= 1) return pct.toFixed(1) + '%';
@@ -246,10 +249,14 @@
 
                 container.innerHTML = top3.map((c, i) => {
                     const rank = i + 1;
+                    const img = IMAGES[c.name] || '';
+                    const badge = img
+                        ? `<img src="${img}" alt="${c.name}">`
+                        : rank;
                     return `
                         <div class="candidate rank-${rank}">
                             <div class="candidate-left">
-                                <div class="rank-badge">${rank}</div>
+                                <div class="rank-badge">${badge}</div>
                                 <div>
                                     <div class="name">${c.name}</div>
                                     <div class="bar-bg">
